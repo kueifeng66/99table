@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Times Table Town — Interactive Multiplication Explorer & Practice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Floating Background Shapes for Playful Elementary Vibe -->
+  <div class="bg-decorations" aria-hidden="true">
+    <span class="bg-shape s1">×</span>
+    <span class="bg-shape s2">★</span>
+    <span class="bg-shape s3">=</span>
+    <span class="bg-shape s4">+</span>
+    <span class="bg-shape s5">★</span>
+  </div>
+
+  <!-- Top Header Bar -->
+  <header class="top-header">
+    <div class="brand">
+      <div class="brand-logo" aria-hidden="true">🦁</div>
+      <div>
+        <h1 class="brand-title">Times Table Town</h1>
+        <p class="brand-subtitle">See it, hear it, play it &amp; master multiplication!</p>
+      </div>
+    </div>
+
+    <div class="header-stats">
+      <div class="stat-pill star-pill" title="Total Stars Earned">
+        <span class="stat-icon">⭐</span>
+        <div>
+          <span class="stat-label">Stars</span>
+          <span class="stat-value" id="totalStarsDisplay">0</span>
+        </div>
+      </div>
+      <div class="stat-pill streak-pill" title="Current Correct Streak">
+        <span class="stat-icon">🔥</span>
+        <div>
+          <span class="stat-label">Streak</span>
+          <span class="stat-value" id="currentStreakDisplay">0</span>
+        </div>
+      </div>
+      <div class="stat-pill mastered-pill" title="Facts Mastered out of 100 (1-10)">
+        <span class="stat-icon">🏆</span>
+        <div>
+          <span class="stat-label">Mastered</span>
+          <span class="stat-value" id="masteredCountDisplay">0/100</span>
+        </div>
+      </div>
+      <button id="soundToggleBtn" class="icon-btn" aria-label="Toggle sound effects" title="Toggle Sound Effects">
+        🔊 Sound ON
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Mode Navigation Tabs -->
+  <nav class="mode-nav" aria-label="Learning Modes">
+    <button class="mode-tab active" data-mode="explore">
+      <span class="tab-emoji">🔍</span>
+      <span class="tab-text">Explore Grid</span>
+    </button>
+    <button class="mode-tab" data-mode="cards">
+      <span class="tab-emoji">📖</span>
+      <span class="tab-text">Table Cards &amp; Tricks</span>
+    </button>
+    <button class="mode-tab" data-mode="practice">
+      <span class="tab-emoji">🎯</span>
+      <span class="tab-text">Practice Quiz</span>
+    </button>
+    <button class="mode-tab" data-mode="games">
+      <span class="tab-emoji">🚀</span>
+      <span class="tab-text">Factor Games</span>
+    </button>
+    <button class="mode-tab" data-mode="passport">
+      <span class="tab-emoji">🏅</span>
+      <span class="tab-text">Star Passport</span>
+    </button>
+  </nav>
+
+  <!-- Main Workspace Container -->
+  <main class="main-container">
+
+    <!-- ==========================================
+         MODE 1: EXPLORE INTERACTIVE GRID
+         ========================================== -->
+    <section id="mode-explore" class="mode-section active" aria-labelledby="explore-heading">
+      <div class="explore-layout">
+        <!-- Left: Interactive Multiplication Table -->
+        <div class="card grid-card">
+          <div class="grid-toolbar">
+            <div class="toolbar-group">
+              <label class="toolbar-label" for="gridSizeSelect">Grid Size:</label>
+              <div class="segmented-control" id="gridSizeButtons" role="group" aria-label="Grid Size">
+                <button class="seg-btn" data-size="9">1–9</button>
+                <button class="seg-btn active" data-size="10">1–10</button>
+                <button class="seg-btn" data-size="12">1–12</button>
+              </div>
+            </div>
+
+            <div class="toolbar-group">
+              <span class="toolbar-label">Pattern Magic:</span>
+              <div class="pattern-chips">
+                <button class="chip-btn active" data-pattern="none">None</button>
+                <button class="chip-btn" data-pattern="squares">✨ Squares</button>
+                <button class="chip-btn" data-pattern="even">🔵 Evens</button>
+                <button class="chip-btn" data-pattern="odd">🟠 Odds</button>
+                <button class="chip-btn" data-pattern="fives">🖐️ ×5s</button>
+                <button class="chip-btn" data-pattern="nines">🥷 ×9s</button>
+              </div>
+            </div>
+          </div>
+
+          <p class="grid-instruction">
+            👆 <strong>Click or tap any square</strong> to lock an equation and explore how it works!
+          </p>
+
+          <div class="table-scroll-wrapper">
+            <div id="multiplicationGrid" class="mult-grid" role="grid" aria-label="Multiplication Table"></div>
+          </div>
+        </div>
+
+        <!-- Right: Visual Concept Visualizer -->
+        <div class="card visualizer-card">
+          <div class="equation-banner" id="equationBanner">
+            <div class="equation-numbers">
+              <span class="eq-factor eq-a" id="vizFactorA">4</span>
+              <span class="eq-sign">×</span>
+              <span class="eq-factor eq-b" id="vizFactorB">6</span>
+              <span class="eq-sign">=</span>
+              <span class="eq-product" id="vizProduct">24</span>
+            </div>
+            <div class="equation-actions">
+              <button id="speakEquationBtn" class="action-pill speak-btn" title="Hear it read aloud">
+                🗣️ Read Aloud
+              </button>
+              <button id="flipFactorsBtn" class="action-pill flip-btn" title="Commutative Property: Flip rows and columns!">
+                🔄 Flip (<span id="flipBtnText">6 × 4</span>)
+              </button>
+            </div>
+          </div>
+
+          <div class="equation-word-meaning" id="vizWordMeaning">
+            <strong>4 groups of 6</strong> makes <strong>24</strong>!
+          </div>
+
+          <!-- Visual Representation Tabs -->
+          <div class="viz-type-tabs" role="tablist">
+            <button class="viz-tab active" data-viz="array" role="tab">🧱 Block Array</button>
+            <button class="viz-tab" data-viz="groups" role="tab">🧺 Equal Groups</button>
+            <button class="viz-tab" data-viz="numberline" role="tab">🐸 Skip Counting</button>
+          </div>
+
+          <!-- Visual Stage -->
+          <div class="viz-stage" id="vizStage">
+            <!-- Populated dynamically by app.js -->
+          </div>
+
+          <!-- Repeated Addition & Tip Footer -->
+          <div class="viz-footer">
+            <div class="addition-box">
+              <span class="addition-title">➕ Repeated Addition:</span>
+              <div class="addition-math" id="vizRepeatedAddition">6 + 6 + 6 + 6 = 24</div>
+            </div>
+            <div class="trick-mini-box" id="vizSmartTip">
+              💡 <strong>Tip for ×4:</strong> Double the number, then double it again! (6 → 12 → 24)
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         MODE 2: TABLE CARDS & SECRET TRICKS
+         ========================================== -->
+    <section id="mode-cards" class="mode-section" aria-labelledby="cards-heading">
+      <div class="card full-card">
+        <div class="cards-header">
+          <div>
+            <h2 id="cards-heading" class="section-title">📖 Times Table Flip Cards &amp; Secret Tricks</h2>
+            <p class="section-subtitle">Pick a number to learn its secret pattern, read it aloud, or test yourself by hiding the answers!</p>
+          </div>
+          <div class="cards-controls">
+            <button id="toggleAllCardsBtn" class="primary-btn secondary-style">🙈 Hide All Answers</button>
+            <button id="speakFullTableBtn" class="primary-btn">🔊 Read Whole Table</button>
+          </div>
+        </div>
+
+        <!-- Number Selector 1 - 12 -->
+        <div class="number-selector-bar" id="cardTableSelector" role="group" aria-label="Choose a times table">
+          <!-- 1 to 12 buttons generated by JS -->
+        </div>
+
+        <!-- Secret Trick Spotlight Banner -->
+        <div class="secret-trick-banner" id="cardSecretTrickBanner">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- 12 Flip Cards Grid -->
+        <div class="table-cards-grid" id="tableCardsContainer">
+          <!-- 1 to 12 cards generated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         MODE 3: PRACTICE QUIZ STUDIO
+         ========================================== -->
+    <section id="mode-practice" class="mode-section" aria-labelledby="practice-heading">
+      <div class="practice-layout">
+        <!-- Left Sidebar: Quiz Settings -->
+        <div class="card practice-settings-card">
+          <h2 id="practice-heading" class="section-title">🎯 Customize Practice</h2>
+          <p class="small-muted">Select which multiplication tables you want to practice:</p>
+
+          <div class="preset-buttons">
+            <button class="chip-btn" data-preset="easy">🌱 Starter (1, 2, 5, 10)</button>
+            <button class="chip-btn" data-preset="medium">🚀 Builder (3, 4, 6)</button>
+            <button class="chip-btn" data-preset="hard">🔥 Boss Level (7, 8, 9, 12)</button>
+            <button class="chip-btn active" data-preset="all10">⭐ All 1–10</button>
+            <button class="chip-btn" data-preset="all12">👑 All 1–12</button>
+          </div>
+
+          <div class="table-checkbox-grid" id="practiceTableSelector">
+            <!-- 1 to 12 toggle buttons -->
+          </div>
+
+          <div class="setting-row">
+            <label class="setting-label">Answer Style:</label>
+            <div class="segmented-control" id="quizStyleControl">
+              <button class="seg-btn active" data-style="choices">4 Choices</button>
+              <button class="seg-btn" data-style="keypad">Number Pad</button>
+            </div>
+          </div>
+
+          <div class="session-score-box">
+            <div class="score-stat">
+              <span>✅ Correct</span>
+              <strong id="sessionCorrect">0</strong>
+            </div>
+            <div class="score-stat">
+              <span>🎯 Accuracy</span>
+              <strong id="sessionAccuracy">100%</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Main Stage: Active Question -->
+        <div class="card practice-stage-card">
+          <div class="quiz-top-bar">
+            <span class="quiz-badge" id="quizTableBadge">Practicing ×4 Table</span>
+            <button id="showQuizHintBtn" class="hint-btn">💡 Need a Visual Hint?</button>
+          </div>
+
+          <div class="quiz-question-box" id="quizQuestionBox">
+            <span class="q-num" id="quizFactorA">7</span>
+            <span class="q-op">×</span>
+            <span class="q-num" id="quizFactorB">8</span>
+            <span class="q-eq">=</span>
+            <span class="q-ans" id="quizAnswerSlot">?</span>
+          </div>
+
+          <!-- Visual Hint Drawer (Collapsed unless clicked) -->
+          <div class="quiz-hint-drawer hidden" id="quizHintDrawer">
+            <div class="hint-header">
+              <span id="quizHintText">7 groups of 8 — Count the rows or skip count!</span>
+            </div>
+            <div class="hint-visual" id="quizHintVisual"></div>
+          </div>
+
+          <!-- Feedback Message -->
+          <div class="quiz-feedback" id="quizFeedback" aria-live="polite">
+            Pick or type the answer below!
+          </div>
+
+          <!-- Multiple Choice Container -->
+          <div class="quiz-choices-grid" id="quizChoicesContainer">
+            <!-- 4 choice buttons -->
+          </div>
+
+          <!-- Keypad Container (Hidden in Multiple Choice mode) -->
+          <div class="quiz-keypad-wrapper hidden" id="quizKeypadContainer">
+            <div class="keypad-grid">
+              <button class="key-btn" data-key="1">1</button>
+              <button class="key-btn" data-key="2">2</button>
+              <button class="key-btn" data-key="3">3</button>
+              <button class="key-btn" data-key="4">4</button>
+              <button class="key-btn" data-key="5">5</button>
+              <button class="key-btn" data-key="6">6</button>
+              <button class="key-btn" data-key="7">7</button>
+              <button class="key-btn" data-key="8">8</button>
+              <button class="key-btn" data-key="9">9</button>
+              <button class="key-btn key-clear" data-key="clear">⌫</button>
+              <button class="key-btn" data-key="0">0</button>
+              <button class="key-btn key-submit" data-key="submit">GO ✔</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         MODE 4: FACTOR & DETECTIVE GAMES
+         ========================================== -->
+    <section id="mode-games" class="mode-section" aria-labelledby="games-heading">
+      <div class="games-header-bar">
+        <div class="segmented-control game-picker">
+          <button class="seg-btn active" data-game="bubbles">🫧 Bubble Factor Pop</button>
+          <button class="seg-btn" data-game="detective">🕵️‍♀️ Mystery Number Detective</button>
+        </div>
+      </div>
+
+      <!-- GAME 1: Bubble Factor Pop -->
+      <div id="game-bubbles" class="card game-card">
+        <div class="game-top-bar">
+          <div>
+            <h2 class="section-title">🫧 Bubble Factor Pop!</h2>
+            <p class="section-subtitle">Pop ALL the multiplication bubbles that equal the Target Number!</p>
+          </div>
+          <div class="game-stats-bar">
+            <div class="game-stat">🎯 Target: <strong class="target-highlight" id="bubbleTargetNumber">24</strong></div>
+            <div class="game-stat">🫧 Found: <strong id="bubbleFoundCount">0 / 3</strong></div>
+            <button id="newBubbleRoundBtn" class="primary-btn">🔄 New Target</button>
+          </div>
+        </div>
+
+        <div class="bubble-feedback" id="bubbleFeedback" aria-live="polite">
+          Find all bubbles that multiply to make <strong id="bubbleTargetInline">24</strong>!
+        </div>
+
+        <div class="bubble-arena" id="bubbleArena">
+          <!-- Bubbles generated by JS -->
+        </div>
+      </div>
+
+      <!-- GAME 2: Mystery Number Detective -->
+      <div id="game-detective" class="card game-card hidden">
+        <div class="game-top-bar">
+          <div>
+            <h2 class="section-title">🕵️‍♀️ Mystery Number Detective</h2>
+            <p class="section-subtitle">Find the missing number (?) that completes the multiplication puzzle!</p>
+          </div>
+          <div class="game-stats-bar">
+            <div class="game-stat">🔍 Cases Solved: <strong id="detectiveSolvedCount">0</strong></div>
+            <button id="nextDetectiveBtn" class="primary-btn">➡️ Next Mystery</button>
+          </div>
+        </div>
+
+        <div class="detective-stage">
+          <div class="detective-equation" id="detectiveEquation">
+            <!-- Generated by JS, e.g. ? × 6 = 42 -->
+          </div>
+          <p class="detective-clue" id="detectiveClue">
+            Clue: How many 6s does it take to make 42?
+          </p>
+          <div class="detective-options" id="detectiveOptions">
+            <!-- 4 options -->
+          </div>
+          <div class="detective-feedback" id="detectiveFeedback" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         MODE 5: STAR PASSPORT & MASTERY MAP
+         ========================================== -->
+    <section id="mode-passport" class="mode-section" aria-labelledby="passport-heading">
+      <div class="passport-layout">
+        <div class="card passport-badges-card">
+          <div class="passport-header">
+            <h2 id="passport-heading" class="section-title">🏅 My Multiplication Badges</h2>
+            <button id="resetProgressBtn" class="text-danger-btn" title="Reset saved stars and mastery">Reset Progress</button>
+          </div>
+          <p class="section-subtitle">Earn stars and practice equations to unlock special badges!</p>
+          <div class="badges-grid" id="badgesContainer">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <div class="card passport-heatmap-card">
+          <h2 class="section-title">🗺️ 1–10 Mastery Map</h2>
+          <p class="section-subtitle">Every time you answer a fact right in Practice Quiz, its square turns greener!</p>
+          <div class="heatmap-legend">
+            <span class="legend-item"><i class="dot dot-unseen"></i> Not practiced yet</span>
+            <span class="legend-item"><i class="dot dot-learning"></i> Learning (1–2×)</span>
+            <span class="legend-item"><i class="dot dot-mastered"></i> Mastered (3+ ✅)</span>
+          </div>
+          <div id="masteryHeatmap" class="mastery-grid"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Celebration Confetti Canvas -->
+  <canvas id="confettiCanvas" aria-hidden="true"></canvas>
+
+  <script src="app.js"></script>
+</body>
+</html>
